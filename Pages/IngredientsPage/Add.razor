@@ -1,0 +1,39 @@
+﻿@page "/ingredients/add"
+
+@using DrinksWebApp.Models
+@using DrinksWebApp.Services
+@inject IngredientService ingredientService
+@inject NavigationManager navManager
+
+<h1>@Title Ingredient</h1>
+<hr />
+<EditForm Model="@ingredient" OnValidSubmit="SaveIngredient">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="Name" class="form-label">Name</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="ingredient.Name" />
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Add</button>
+        <button class="btn btn-light" @onclick="Cancel">Cancel</button>
+    </div>
+</EditForm>
+@code {
+    [Parameter]
+    public int userId { get; set; }
+    protected string Title = "Add";
+    protected Ingredient ingredient = new();
+
+    protected async Task SaveIngredient()
+    {
+        await ingredientService.Add(ingredient);
+        navManager.NavigateTo("/ingredients");
+    }
+
+    protected async Task Cancel()
+    {
+        navManager.NavigateTo("/ingredients");
+    }
+}
