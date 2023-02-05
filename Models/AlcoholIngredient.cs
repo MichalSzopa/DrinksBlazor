@@ -1,6 +1,6 @@
 ﻿namespace DrinksWebApp.Models
 {
-    public class AlcoholIngredient
+    public partial class AlcoholIngredient
     {
 
         public int Id { get; set; }

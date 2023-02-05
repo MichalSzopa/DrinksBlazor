@@ -1,6 +1,6 @@
 ﻿namespace DrinksWebApp.Models
 {
-    public class Drink
+    public partial class Drink
     {
         public int Id { get; set; }
 
@@ -14,6 +14,6 @@
 
         public virtual ICollection<AlcoholIngredientDrink> AlcoholIngredientDrinks { get; set; }
 
-        public virtual ICollection<Opinion> Opinion { get; set; }
+        public virtual ICollection<Opinion> Opinions { get; set; }
     }
 }

@@ -7,8 +7,8 @@
 
 <table>
 	<colgroup>
-		<col width="30%" />	
-		<col width="70%" />	
+		<col width="200px" />	
+		<col width="800px" />	
 	</colgroup>
 	<tbody>
 		<tr>
@@ -45,9 +45,14 @@
 
 	public Drink drink;
 
+	protected string ingredients;
+
+	protected string alcoholIngredients;
+
 	protected override async Task OnInitializedAsync()
 	{
 		drink = await drinkService.GetDetails(int.Parse(drinkId));
+		//ingredients = 
 	}
 
 

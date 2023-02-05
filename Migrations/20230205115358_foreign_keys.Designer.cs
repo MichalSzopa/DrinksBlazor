@@ -2,6 +2,7 @@
 using DrinksWebApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DrinksWebApp.Migrations
 {
     [DbContext(typeof(DrinksAppContext))]
-    partial class DrinksAppContextModelSnapshot : ModelSnapshot
+    [Migration("20230205115358_foreign_keys")]
+    partial class foreign_keys
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.13");
@@ -45,6 +47,10 @@ namespace DrinksWebApp.Migrations
 
                     b.Property<int>("DrinkId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Quantity")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 

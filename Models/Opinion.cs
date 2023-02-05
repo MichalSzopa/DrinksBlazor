@@ -1,12 +1,14 @@
 ﻿namespace DrinksWebApp.Models
 {
-    public class Opinion
+    public partial class Opinion
     {
         public int Id { get; set; }
 
         public string Content { get; set; }
 
         public int Rate { get; set; }
+
+        public int DrinkId { get; set; }
 
         public virtual Drink Drink { get; set; }
     }
