@@ -11,5 +11,11 @@
         public int DrinkId { get; set; }
 
         public virtual Drink Drink { get; set; }
+
+        public int UserId { get; set; }
+
+        public virtual User User { get; set; }
+
+        public DateTime CreateDate { get; set; }
     }
 }
