@@ -1,4 +1,4 @@
-﻿@page "/drinks"
+﻿@page "/"
 
 <PageTitle>Drinks</PageTitle>
 
@@ -10,7 +10,7 @@
 <h1>Drinks</h1>
 
 <NavLink class="nav-link" href="drinks/add">
-    <span class="oi oi-plus" aria-hidden="true"></span> Add
+    <span class="oi oi-plus" aria-hidden="true"></span> Dodaj
 </NavLink>
 
 @if (drinks == null)
@@ -23,6 +23,8 @@ else
         <thead>
             <tr>
                 <th>Name</th>
+                <th>Description</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
