@@ -1,9 +1,11 @@
 using DrinksWebApp.Data;
 using DrinksWebApp.Services;
+using Syncfusion.Blazor;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddSyncfusionBlazor();
 builder.Services.AddDbContext<DrinksAppContext>();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
@@ -11,6 +13,7 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<IngredientService>();
 builder.Services.AddSingleton<AlcoholIngredientService>();
 builder.Services.AddSingleton<DrinkService>();
+builder.Services.AddSingleton<OpinionService>();
 
 var app = builder.Build();
 

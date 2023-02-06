@@ -66,18 +66,17 @@
         var ingreds = selectedIngredients.Select(si => int.Parse(si)).ToArray();
         var alcIngreds = selectedAlcoholIngredients.Select(si => int.Parse(si)).ToArray();
         await drinkService.Add(drink, ingreds, alcIngreds);
-        navManager.NavigateTo("/drinks");
+        navManager.NavigateTo("/");
     }
 
     protected async Task Cancel()
     {
-        navManager.NavigateTo("/drinks");
+        navManager.NavigateTo("/");
     }
 
     protected override async Task OnInitializedAsync()
     {
         ingredients = await ingredientService.GetAll();
         alcoholIngredients = await alcoholIngredientService.GetAll();
-        return;
     }
 }

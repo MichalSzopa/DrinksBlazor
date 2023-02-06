@@ -11,10 +11,10 @@ namespace DrinksWebApp.Services
         {
         }
 
-        public async Task<Drink[]> GetListAsync()
+        public async Task<ICollection<Drink>> GetListAsync()
         {
             using var context = new DrinksAppContext();
-            return await context.Drink.ToArrayAsync();
+            return await context.Drink.ToListAsync();
         }
 
         public async Task<Drink> GetDetails(int id)
@@ -60,6 +60,25 @@ namespace DrinksWebApp.Services
             await context.IngredientDrink.AddRangeAsync(ingredientDrinks);
             await context.AlcoholIngredientDrink.AddRangeAsync(alcoholIngredientDrinks);
             await context.SaveChangesAsync();
+        }
+
+        public async Task<ICollection<Drink>> GetByIngredients(List<int> ingredients, List<int> alcoholIngredients)
+        {
+            using var context = new DrinksAppContext();
+            var drinks = await context.Drink
+                    .Include(d => d.IngredientDrinks)
+                    .Include(d => d.AlcoholIngredientDrinks)
+                    .ToListAsync();
+
+            return drinks.Where(d => d.IngredientDrinks.Any(id => ingredients.Count() == 0 || ingredients.Contains(id.IngredientId)))
+                         .Where(d => d.AlcoholIngredientDrinks.Any(aid => alcoholIngredients.Count() == 0 || alcoholIngredients.Contains(aid.AlcoholIngredientId))).ToList();
+
+            //return await context.Drink
+            //    .Include(d => d.IngredientDrinks)
+            //    .Include(d => d.AlcoholIngredientDrinks)
+            //    .Where(d => d.IngredientDrinks.Any(id => ingredients.Count() == 0 || ingredients.Contains(id.Id)))
+            //    .Where(d => d.AlcoholIngredientDrinks.Any(aid => alcoholIngredients.Count() == 0 || alcoholIngredients.Contains(aid.Id)))
+            //    .ToListAsync();                
         }
     }
 }

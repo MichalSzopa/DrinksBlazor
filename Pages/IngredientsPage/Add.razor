@@ -5,7 +5,7 @@
 @inject IngredientService ingredientService
 @inject NavigationManager navManager
 
-<h1>@Title Ingredient</h1>
+<h1>Dodaj Składnik</h1>
 <hr />
 <EditForm Model="@ingredient" OnValidSubmit="SaveIngredient">
     <DataAnnotationsValidator />
@@ -21,9 +21,6 @@
     </div>
 </EditForm>
 @code {
-    [Parameter]
-    public int userId { get; set; }
-    protected string Title = "Add";
     protected Ingredient ingredient = new();
 
     protected async Task SaveIngredient()

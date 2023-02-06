@@ -2,6 +2,7 @@
 @using DrinksWebApp.Models;
 @using DrinksWebApp.Services
 @inject DrinkService drinkService
+@inject OpinionService opinionService
 
 <h3>Details</h3>
 
@@ -35,9 +36,52 @@
 				<span> @drink.Recipe</span>
 			</td>
 		</tr>
+		<tr>
+			<td>
+				<span> Ingredients </span>
+			</td>
+			<td>
+				<span> @ingredients</span>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<span> Alcohol Ingredients </span>
+			</td>
+			<td>
+				<span> @alcoholIngredients</span>
+			</td>
+		</tr>
 	</tbody>
 
 </table>
+
+<NavLink class="nav-link" href=@href>
+	<span class="oi oi-plus" aria-hidden="true"></span> Dodaj opinię
+</NavLink>
+
+@if (opinions.Count() != 0)
+{
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Ocena</th>
+				<th>Opinia</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var opinion in opinions)
+			{
+				var href = "drinks/details/" + drink.Id.ToString();
+				<tr>
+					<td>@opinion.Rate / 10</td>
+					<td>@opinion.Content</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
 
 @code {
 	[Parameter]
@@ -49,11 +93,16 @@
 
 	protected string alcoholIngredients;
 
+	protected ICollection<Opinion> opinions;
+
+	protected string href;
+
 	protected override async Task OnInitializedAsync()
 	{
 		drink = await drinkService.GetDetails(int.Parse(drinkId));
-		//ingredients = 
+		ingredients = string.Join(", ", drink.IngredientDrinks.Select(id => id.Ingredient.Name).ToList());
+		alcoholIngredients = string.Join(", ", drink.AlcoholIngredientDrinks.Select(id => id.AlcoholIngredient.Name).ToList());
+		href = "/add-opinion/" + drink.Id.ToString();
+		opinions = await opinionService.GetByDrinkId(drink.Id);
 	}
-
-
 }

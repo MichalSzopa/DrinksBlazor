@@ -5,7 +5,9 @@
 @using DrinksWebApp.Models
 @using DrinksWebApp.Data
 @using DrinksWebApp.Services
+@inject AlcoholIngredientService alcoholIngredientService
 @inject DrinkService drinkService
+@inject IngredientService ingredientService
 
 <h1>Drinks</h1>
 
@@ -19,6 +21,30 @@
 }
 else
 {
+    <div class="d-flex" style="display: inline-flex; flex-direction: row; justify-content: flex-start;">
+        <label for="Ingredients" class="form-label">Ingredients</label>
+        <div class="col-md-4">
+            <select @bind="selectedIngredients" multiple>
+                @foreach (var ingredient in @ingredients)
+                {
+                    <option value="@ingredient.Id"> @ingredient.Name </option>
+                }
+            </select>
+    </div>
+
+    <label for="AlcoholIngredients" class="form-label">Alcohol Ingredients</label>
+    <div class="col-md-4">
+        <select @bind="selectedAlcoholIngredients" multiple>
+            @foreach (var alcoholIngredient in @alcoholIngredients)
+            {
+                <option value="@alcoholIngredient.Id"> @alcoholIngredient.Name </option>
+            }
+        </select>
+    </div>
+
+    <button class="btn btn-light" @onclick="Filter">Filtruj</button>
+    </div>
+    
     <table class="table">
         <thead>
             <tr>
@@ -46,10 +72,24 @@ else
 }
 
 @code {
-    private Drink[]? drinks;
+    private ICollection<Drink> drinks;
+
+    protected Ingredient[] ingredients;
+    protected string[] selectedIngredients = new string[] { };
+    protected AlcoholIngredient[] alcoholIngredients;
+    protected string[] selectedAlcoholIngredients = new string[] { };
 
     protected override async Task OnInitializedAsync()
     {
         drinks = await drinkService.GetListAsync();
+        ingredients = await ingredientService.GetAll();
+        alcoholIngredients = await alcoholIngredientService.GetAll();
+    }
+
+    protected async Task Filter()
+    {
+        var ingreds = selectedIngredients.Select(si => int.Parse(si)).ToList();
+        var alcIngreds = selectedAlcoholIngredients.Select(si => int.Parse(si)).ToList();
+        drinks = await drinkService.GetByIngredients(ingreds, alcIngreds);
     }
 }
