@@ -23,6 +23,8 @@ namespace DrinksWebApp.Data
 
         public DbSet<Opinion> Opinion { get; set; }
 
+		public DbSet<User> User { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 			modelBuilder.Entity<Drink>(entity =>
@@ -100,6 +102,11 @@ namespace DrinksWebApp.Data
 					.OnDelete(DeleteBehavior.ClientSetNull)
 					.HasConstraintName("FK_AlcoholIngredientDrink_AlcoholIngredient");
 			});
-		}
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.ToTable("User");
+            });
+        }
 	}
 }
