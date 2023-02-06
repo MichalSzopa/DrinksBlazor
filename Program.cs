@@ -9,7 +9,6 @@ builder.Services.AddSyncfusionBlazor();
 builder.Services.AddDbContext<DrinksAppContext>();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<IngredientService>();
 builder.Services.AddSingleton<AlcoholIngredientService>();
 builder.Services.AddSingleton<DrinkService>();

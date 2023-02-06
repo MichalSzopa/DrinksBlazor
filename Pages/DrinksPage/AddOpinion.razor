@@ -57,6 +57,7 @@
     protected async Task SaveOpinion()
     {
         opinion.Rate = int.Parse(rate);
+        opinion.CreateDate = DateTime.Now;
         await opinionService.Add(opinion);
         navManager.NavigateTo("/drinks/details/" + drinkId.ToString());
     }
