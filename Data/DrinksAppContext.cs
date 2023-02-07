@@ -107,6 +107,27 @@ namespace DrinksWebApp.Data
             {
                 entity.ToTable("User");
             });
+
+            modelBuilder.Entity<Opinion>(entity =>
+            {
+                entity.ToTable("Opinion");
+
+                entity.HasIndex(e => e.DrinkId, "IXFK_Opinion_Drink");
+
+                entity.HasOne(d => d.Drink)
+                    .WithMany(p => p.Opinions)
+                    .HasForeignKey(d => d.DrinkId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Opinion_Drink");
+
+                entity.HasIndex(e => e.UserId, "IXFK_Opinion_User");
+
+                entity.HasOne(o => o.User)
+                    .WithMany(u => u.Opinions)
+                    .HasForeignKey(o => o.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Opinion_User");
+            });
         }
 	}
 }
