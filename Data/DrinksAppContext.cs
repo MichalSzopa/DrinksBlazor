@@ -30,6 +30,14 @@ namespace DrinksWebApp.Data
 			modelBuilder.Entity<Drink>(entity =>
 			{
 				entity.ToTable("Drink");
+
+				entity.HasIndex(e => e.UserId, "IXFK_Drink_User");
+
+				entity.HasOne(d => d.User)
+					.WithMany(u => u.Drinks)
+					.HasForeignKey(d => d.UserId)
+					.OnDelete(DeleteBehavior.ClientSetNull)
+					.HasConstraintName("FK_Drink_User");
 			});
 
 			modelBuilder.Entity<Ingredient>(entity =>
@@ -40,19 +48,6 @@ namespace DrinksWebApp.Data
 			modelBuilder.Entity<AlcoholIngredient>(entity =>
 			{
 				entity.ToTable("AlcoholIngredient");
-			});
-
-			modelBuilder.Entity<Opinion>(entity =>
-			{
-				entity.ToTable("Opinion");
-
-				entity.HasIndex(e => e.DrinkId, "IXFK_Opinion_Drink");
-
-				entity.HasOne(d => d.Drink)
-					.WithMany(p => p.Opinions)
-					.HasForeignKey(d => d.DrinkId)
-					.OnDelete(DeleteBehavior.ClientSetNull)
-					.HasConstraintName("FK_Opinion_Drink");
 			});
 
             modelBuilder.Entity<IngredientDrink>(entity =>

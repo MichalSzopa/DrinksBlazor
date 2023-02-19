@@ -15,5 +15,7 @@ namespace DrinksWebApp.Models
         public UserType Type { get; set; }
 
         public virtual ICollection<Opinion> Opinions { get; set; }
+
+        public virtual ICollection<Drink> Drinks { get; set; }
     }
 }

@@ -1,0 +1,84 @@
+﻿@page "/register"
+
+@using DrinksWebApp.Models
+@using DrinksWebApp.Services
+
+@inject UserService userService
+@inject NavigationManager navManager
+
+<h3>Register</h3>
+
+<EditForm Model="@registerModel">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+
+        <label for="username" class="form-label">Name</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="registerModel.username" />
+        </div>
+
+        <label for="password" class="form-label">Password</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="registerModel.password" />
+        </div>
+
+        <label for="repeatedPassword" class="form-label">Repeat password</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="registerModel.repeatedPassword" />
+        </div>
+
+        <label for="email" class="form-label">Email</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="registerModel.email" />
+        </div>
+
+    </div>
+</EditForm>
+@if (registerModel.password == registerModel.repeatedPassword)
+{
+    <button class="btn btn-light" @onclick="Submit">Zarejestruj się</button>
+}
+<button class="btn btn-light" @onclick="Cancel">Anuluj</button>
+
+@if (registerError)
+{
+    <span> Błąd rejestracji! </span>
+}
+
+@code {
+    public RegisterModel registerModel = new();
+
+    protected bool registerError = false;
+
+    protected async Task Submit()
+    {
+        var user = new User
+        {
+                Name = registerModel.username,
+                Password = registerModel.password,
+                Email = registerModel.email,
+        };
+
+        registerError = !await userService.Register(user);
+        if (!registerError)
+        {
+            navManager.NavigateTo("/");
+        }
+    }
+
+    protected async Task Cancel()
+    {
+        navManager.NavigateTo("/");
+    }
+
+    public class RegisterModel
+    {
+        public string username { get; set; }
+
+        public string password { get; set; }
+
+        public string email { get; set; }
+
+        public string repeatedPassword { get; set; }
+    }
+}

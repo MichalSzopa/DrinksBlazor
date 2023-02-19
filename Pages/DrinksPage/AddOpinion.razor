@@ -58,6 +58,7 @@
     {
         opinion.Rate = int.Parse(rate);
         opinion.CreateDate = DateTime.Now;
+        opinion.UserId = 1; // todo
         await opinionService.Add(opinion);
         navManager.NavigateTo("/drinks/details/" + drinkId.ToString());
     }
