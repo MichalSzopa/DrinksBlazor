@@ -1,8 +1,100 @@
-﻿<h3>Login</h3>
+﻿@page "/login"
+
+@using DrinksWebApp.Models
+@using DrinksWebApp.Services
+@using Microsoft.AspNetCore.Authentication.Cookies;
+@using System.Security.Claims;
+@using Microsoft.AspNetCore.Authentication;
+@using Microsoft.AspNetCore.Http
+
+@inject HeaderContextService headerContextService
+@inject AuthenticationStateProvider authenticationStateProvider
+
+@inject UserService userService
+@inject NavigationManager navManager
+
+<h3>Login</h3>
+
+<EditForm Model="@loginModel">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+
+        <label for="username" class="form-label">Name</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="loginModel.username" />
+        </div>
+
+        <label for="password" class="form-label">Password</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="loginModel.password" />
+        </div>
 
 
+    </div>
+</EditForm>
+
+<button class="btn btn-light" @onclick="Submit">Zaloguj się</button>
+
+<button class="btn btn-light" @onclick="Cancel">Anuluj</button>
+
+@if (loginError)
+{
+    <span> Błąd logowania! </span>
+}
 
 @code {
+    public LoginModel loginModel = new();
 
+    protected bool loginError = false;
 
+    protected async Task Submit()
+    {
+        try
+        {
+            var claims = await userService.Login(loginModel.username, loginModel.password);
+
+            if (claims == null)
+            {
+                loginError = true;
+                return;
+            }
+
+            var context = headerContextService.GetHttpContext();
+
+            if(context == null)
+            {
+                throw new Exception("cos popsute xd");
+            }
+
+            // authenticationStateProvider.
+
+            await context.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme)),
+                new AuthenticationProperties
+                    {
+                        AllowRefresh = true,
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(15),
+                        IssuedUtc = DateTimeOffset.UtcNow,
+                    });
+            navManager.NavigateTo("/");
+        }
+        catch (Exception)
+        {
+            loginError = true;
+        }
+    }
+
+    protected async Task Cancel()
+    {
+        navManager.NavigateTo("/");
+    }
+
+    public class LoginModel
+    {
+        public string username { get; set; }
+
+        public string password { get; set; }
+    }
 }
+
