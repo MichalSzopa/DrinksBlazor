@@ -4,9 +4,9 @@
     {
         public enum UserType 
         {
-            Admin,
-            Moderator,
-            Guest
+            Admin = 0,
+            Moderator = 1,
+            User = 2,
         }
     }
 }

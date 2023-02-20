@@ -10,10 +10,14 @@
 @inject IngredientService ingredientService
 
 <h1>Drinks</h1>
+<AuthorizeView Roles="Admin,Moderator,User">
+    <Authorized>
+        <NavLink class="nav-link" href="drinks/add">
+            <span class="oi oi-plus" aria-hidden="true"></span> Dodaj
+        </NavLink>
+    </Authorized>
+</AuthorizeView>
 
-<NavLink class="nav-link" href="drinks/add">
-    <span class="oi oi-plus" aria-hidden="true"></span> Dodaj
-</NavLink>
 
 @if (drinks == null)
 {
@@ -30,21 +34,21 @@ else
                     <option value="@ingredient.Id"> @ingredient.Name </option>
                 }
             </select>
+        </div>
+
+        <label for="AlcoholIngredients" class="form-label">Alcohol Ingredients</label>
+        <div class="col-md-4">
+            <select @bind="selectedAlcoholIngredients" multiple>
+                @foreach (var alcoholIngredient in @alcoholIngredients)
+                {
+                    <option value="@alcoholIngredient.Id"> @alcoholIngredient.Name </option>
+                }
+            </select>
+        </div>
+
+        <button class="btn btn-light" @onclick="Filter">Filtruj</button>
     </div>
 
-    <label for="AlcoholIngredients" class="form-label">Alcohol Ingredients</label>
-    <div class="col-md-4">
-        <select @bind="selectedAlcoholIngredients" multiple>
-            @foreach (var alcoholIngredient in @alcoholIngredients)
-            {
-                <option value="@alcoholIngredient.Id"> @alcoholIngredient.Name </option>
-            }
-        </select>
-    </div>
-
-    <button class="btn btn-light" @onclick="Filter">Filtruj</button>
-    </div>
-    
     <table class="table">
         <thead>
             <tr>
@@ -60,11 +64,13 @@ else
                 <tr>
                     <td>@drink.Name</td>
                     <td>@drink.Description</td>
-                    <td><div class="nav-item px-3">
-                        <NavLink class="nav-link" href="@href">
-                            <span class="oi oi-plus" aria-hidden="true"></span> Details
-                        </NavLink>
-                    </div></td>
+                    <td>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="@href">
+                                <span class="oi oi-plus" aria-hidden="true"></span> Details
+                            </NavLink>
+                        </div>
+                    </td>
                 </tr>
             }
         </tbody>

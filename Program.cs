@@ -1,6 +1,8 @@
+using DrinksWebApp.Auth;
 using DrinksWebApp.Data;
 using DrinksWebApp.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Syncfusion.Blazor;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,20 +17,13 @@ builder.Services.AddSingleton<AlcoholIngredientService>();
 builder.Services.AddSingleton<DrinkService>();
 builder.Services.AddSingleton<OpinionService>();
 builder.Services.AddSingleton<UserService>();
-builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
-options =>
-{
-    // Sposob aby zwrocic kod 401 (Unauthorized) zamiast 404 (NotFound)
-    options.Events.OnRedirectToLogin = context =>
-    {
-        context.Response.Headers["Location"] =
-        context.RedirectUri;
-        context.Response.StatusCode = 401;
-        return Task.CompletedTask;
-    };
-});
+// auth
+builder.Services.AddAuthenticationCore();
+builder.Services.AddScoped<ProtectedSessionStorage>();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+
+
 
 var app = builder.Build();
 

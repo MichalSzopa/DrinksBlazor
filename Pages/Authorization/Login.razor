@@ -2,16 +2,13 @@
 
 @using DrinksWebApp.Models
 @using DrinksWebApp.Services
-@using Microsoft.AspNetCore.Authentication.Cookies;
-@using System.Security.Claims;
-@using Microsoft.AspNetCore.Authentication;
-@using Microsoft.AspNetCore.Http
-
-@inject HeaderContextService headerContextService
-@inject AuthenticationStateProvider authenticationStateProvider
+@using DrinksWebApp.Auth
+@using static DrinksWebApp.Shared.Enums;
 
 @inject UserService userService
 @inject NavigationManager navManager
+@inject AuthenticationStateProvider authStateProvider
+@inject IJSRuntime js
 
 <h3>Login</h3>
 
@@ -51,32 +48,24 @@
     {
         try
         {
-            var claims = await userService.Login(loginModel.username, loginModel.password);
+            var user = await userService.Login(loginModel.username, loginModel.password);
 
-            if (claims == null)
+            if (user == null)
             {
+                await js.InvokeVoidAsync("alert", "Invalid user name or password");
                 loginError = true;
                 return;
             }
 
-            var context = headerContextService.GetHttpContext();
+            var role = user.Type == UserType.Admin ? "Admin" : user.Type == UserType.Moderator ? "Moderator" : user.Type == UserType.User ? "User" : "InvalidRole";
 
-            if(context == null)
+            var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+            await customAuthStateProvider.UpdateAuthenticationState(new UserSession
             {
-                throw new Exception("cos popsute xd");
-            }
+                UserName = user.Name,
+                Role = role
+            });
 
-            // authenticationStateProvider.
-
-            await context.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme)),
-                new AuthenticationProperties
-                    {
-                        AllowRefresh = true,
-                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(15),
-                        IssuedUtc = DateTimeOffset.UtcNow,
-                    });
             navManager.NavigateTo("/");
         }
         catch (Exception)

@@ -32,25 +32,20 @@ namespace DrinksWebApp.Services
 			return true;
 		}
 
-		public async Task<List<Claim>> Login(string username, string password)
+		public async Task<User> Login(string username, string password)
 		{
 			using var context = new DrinksAppContext();
 			var user = await context.User.Where(u => u.Name == username).FirstOrDefaultAsync();
+
 			if (user == null) 
 			{
 				return null;
 			}
 
-			if(BC.Verify(password, user.Password))
+			if( BC.Verify(password, user.Password))
 			{
-                var claims = new List<Claim>
-                    {
-                        new Claim ( ClaimTypes.NameIdentifier, user.Id.ToString()),
-                        new Claim ( ClaimTypes.Name, user.Name),
-                    };
-                return claims;
-            }
-
+				return user;
+			}
 			return null;
 		}
 	}

@@ -7,39 +7,24 @@
     </div>
 </div>
 @using Microsoft.AspNetCore.Http
-@inject IHttpContextAccessor httpContextAccessor
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Drinks
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="ingredients">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Ingredients
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="alcoholingredients">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Alcohol Ingredients
-            </NavLink>
-        </div>
-        @if (!isUserLoggedIn())
-        {
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="register">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Register
-            </NavLink>
-            </div>
+        <AuthorizeView Roles="Admin, Moderator"> 
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="ingredients">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Ingredients
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="alcoholingredients">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Alcohol Ingredients
+                    </NavLink>
+                </div>
+            </Authorized>
+        </AuthorizeView>
 
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="login">
-                    <span class="oi oi-list-rich" aria-hidden="true"></span> Login
-                </NavLink>
-            </div>
-        }
     </nav>
 </div>
 
@@ -55,6 +40,6 @@
 
     protected bool isUserLoggedIn()
     {
-        return httpContextAccessor.HttpContext.User == null;
+        return false;
     }
 }
