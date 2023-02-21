@@ -5,9 +5,14 @@
 @using Microsoft.AspNetCore.Mvc;
 @using Syncfusion.Blazor
 @using Syncfusion.Blazor.Buttons
+@using DrinksWebApp.Auth
+@using System.Security.Claims;
+
 @inject OpinionService opinionService
 @inject DrinkService drinkService
 @inject NavigationManager navManager
+@inject AuthenticationStateProvider authStateProvider
+@inject UserService userService
 
 <h1>Dodaj opinię do drinka @DrinkName</h1>
 <hr />
@@ -58,7 +63,20 @@
     {
         opinion.Rate = int.Parse(rate);
         opinion.CreateDate = DateTime.Now;
-        opinion.UserId = 1; // todo
+
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var claims = await customAuthStateProvider.GetAuthenticationStateAsync();
+
+        var userName = claims.User.Claims.Where(c => c.Type == ClaimTypes.Name).Select(c => c.Value).FirstOrDefault();
+
+        if (string.IsNullOrEmpty(userName))
+        {
+            throw new Exception("No user");
+        }
+
+        var user = await userService.GetUserByName(userName);
+
+        opinion.UserId = user.Id;
         await opinionService.Add(opinion);
         navManager.NavigateTo("/drinks/details/" + drinkId.ToString());
     }

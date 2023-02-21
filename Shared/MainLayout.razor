@@ -1,4 +1,6 @@
 ﻿@using DrinksWebApp.Auth;
+@using DrinksWebApp.Models;
+@using System.Security.Claims;
 @inherits LayoutComponentBase
 
 @inject AuthenticationStateProvider authStateProvider
@@ -17,6 +19,7 @@
                 </Authorized>
 
                 <NotAuthorized>
+                    <a href="/signin-facebook">Facebook</a>
                     <a href="/login">Login</a>
                     <a href="/register">Register</a>
                 </NotAuthorized>
@@ -30,6 +33,7 @@
 </div>
 
 @code {
+
     private async Task Logout()
     {
         var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;

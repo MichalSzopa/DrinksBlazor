@@ -1,6 +1,7 @@
 ﻿using DrinksWebApp.Data;
 using DrinksWebApp.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using BC = BCrypt.Net.BCrypt;
 
@@ -48,5 +49,34 @@ namespace DrinksWebApp.Services
 			}
 			return null;
 		}
+
+		public async Task<User> GetUserByName(string username)
+		{
+            using var context = new DrinksAppContext();
+            return await context.User
+				.Where(u => u.Name == username)
+				.FirstOrDefaultAsync();
+        }
+
+		public async Task<ICollection<User>> GetUsersAsync()
+		{
+            using var context = new DrinksAppContext();
+			return await context.User.ToListAsync();
+        }
+
+		public async Task UpdateUser(User user)
+		{
+			using var context = new DrinksAppContext();
+			context.Update(user);
+			await context.SaveChangesAsync();
+		}
+
+		public async Task<User> GetDetails(int userId)
+		{
+            using var context = new DrinksAppContext();
+            return await context.User
+                .Where(u => u.Id == userId)
+                .FirstOrDefaultAsync();
+        }
 	}
 }

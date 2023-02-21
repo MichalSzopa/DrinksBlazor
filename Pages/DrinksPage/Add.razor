@@ -2,10 +2,15 @@
 
 @using DrinksWebApp.Models
 @using DrinksWebApp.Services
+@using DrinksWebApp.Auth
+@using System.Security.Claims;
+
 @inject AlcoholIngredientService alcoholIngredientService
 @inject DrinkService drinkService
 @inject IngredientService ingredientService
 @inject NavigationManager navManager
+@inject AuthenticationStateProvider authStateProvider
+@inject UserService userService
 
 <h1>Add drink</h1>
 <hr />
@@ -60,9 +65,11 @@
     protected string[] selectedIngredients = new string[] { };
     protected AlcoholIngredient[] alcoholIngredients;
     protected string[] selectedAlcoholIngredients = new string[] { };
+    protected User user;
 
     protected async Task SaveDrink()
     {
+        drink.UserId = user.Id;
         var ingreds = selectedIngredients.Select(si => int.Parse(si)).ToArray();
         var alcIngreds = selectedAlcoholIngredients.Select(si => int.Parse(si)).ToArray();
         await drinkService.Add(drink, ingreds, alcIngreds);
@@ -78,5 +85,17 @@
     {
         ingredients = await ingredientService.GetAll();
         alcoholIngredients = await alcoholIngredientService.GetAll();
+
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var claims = await customAuthStateProvider.GetAuthenticationStateAsync();
+
+        var userName = claims.User.Claims.Where(c => c.Type == ClaimTypes.Name).Select(c => c.Value).FirstOrDefault();
+
+        if (string.IsNullOrEmpty(userName))
+        {
+            throw new Exception("No user");
+        }
+
+        user = await userService.GetUserByName(userName);
     }
 }

@@ -19,12 +19,12 @@
 
         <label for="password" class="form-label">Password</label>
         <div class="col-md-4">
-            <InputText class="form-control" @bind-Value="registerModel.password" />
+            <InputText class="form-control" type="password" @bind-Value="registerModel.password" />
         </div>
 
         <label for="repeatedPassword" class="form-label">Repeat password</label>
         <div class="col-md-4">
-            <InputText class="form-control" @bind-Value="registerModel.repeatedPassword" />
+            <InputText class="form-control" type="password" @bind-Value="registerModel.repeatedPassword" />
         </div>
 
         <label for="email" class="form-label">Email</label>
@@ -57,6 +57,7 @@
                 Name = registerModel.username,
                 Password = registerModel.password,
                 Email = registerModel.email,
+                Type = Enums.UserType.User,
         };
 
         registerError = !await userService.Register(user);

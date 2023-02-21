@@ -1,6 +1,6 @@
 ﻿<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">DrinksWebApp</a>
+        <a class="navbar-brand" href="">Drinks</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -22,7 +22,20 @@
                         <span class="oi oi-list-rich" aria-hidden="true"></span> Alcohol Ingredients
                     </NavLink>
                 </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="users">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Users
+                    </NavLink>
+                </div>
             </Authorized>
+        </AuthorizeView>
+
+        <AuthorizeView Roles="Admin, Moderator, User ">
+            <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="user/drinks">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> My drinks
+                    </NavLink>
+                </div>
         </AuthorizeView>
 
     </nav>
@@ -36,10 +49,5 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
-    }
-
-    protected bool isUserLoggedIn()
-    {
-        return false;
     }
 }

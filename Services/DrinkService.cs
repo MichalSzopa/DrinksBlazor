@@ -74,5 +74,15 @@ namespace DrinksWebApp.Services
                 .Where(d => d.AlcoholIngredientDrinks.Any(aid => alcoholIngredients.Count() == 0 || alcoholIngredients.Contains(aid.AlcoholIngredientId)))
                 .ToListAsync();
         }
+
+        public async Task<ICollection<Drink>> GetByUserId(int userId)
+        {
+            using var context = new DrinksAppContext();
+            return await context.Drink
+                .Include(d => d.IngredientDrinks)
+                .Include(d => d.AlcoholIngredientDrinks)
+                .Where(d => d.UserId == userId)
+                .ToListAsync();
+        }
     }
 }

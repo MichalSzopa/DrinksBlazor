@@ -1,0 +1,90 @@
+﻿@page "/users/edit/{userId}"
+
+@using DrinksWebApp.Models
+@using DrinksWebApp.Services
+@using DrinksWebApp.Auth
+@using System.Security.Claims;
+@using static DrinksWebApp.Shared.Enums;
+@using Syncfusion.Blazor
+@using Syncfusion.Blazor.Buttons
+
+@inject AlcoholIngredientService alcoholIngredientService
+@inject DrinkService drinkService
+@inject IngredientService ingredientService
+@inject NavigationManager navManager
+@inject AuthenticationStateProvider authStateProvider
+@inject UserService userService
+
+<h1>Edit user</h1>
+<hr />
+
+
+@for (var i = 0; i <= 2; i++)
+{
+    <div class="d-flex" style="display: inline-flex; flex-direction: column;">
+        <span> @getUserType((UserType)i)</span>
+        <SfRadioButton Name="options" Value=@i.ToString() @bind-Checked="user.Type"></SfRadioButton>
+    </div>
+
+}
+
+<EditForm Model="@user">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="Name" class="form-label">Name</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="user.Name" />
+        </div>
+
+        <label for="Email" class="form-label">Email</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="user.Email" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <button class="btn btn-primary" @onclick="SaveUser">Save</button>
+        <button class="btn btn-light" @onclick="Cancel">Cancel</button>
+    </div>
+</EditForm>
+@code {
+    [Parameter]
+    public string userId { get; set; }
+
+    protected User user;
+
+    public int role = 0;
+
+    protected async Task SaveUser()
+    {
+        await userService.UpdateUser(user);
+        navManager.NavigateTo("/users");
+    }
+
+    protected async Task Cancel()
+    {
+        navManager.NavigateTo("/users");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await userService.GetDetails(int.Parse(userId));
+
+        //var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        //var claims = await customAuthStateProvider.GetAuthenticationStateAsync();
+
+        //var userName = claims.User.Claims.Where(c => c.Type == ClaimTypes.Name).Select(c => c.Value).FirstOrDefault();
+
+        //if (string.IsNullOrEmpty(userName))
+        //{
+        //    throw new Exception("No user");
+        //}
+
+        //user = await userService.GetUserByName(userName);
+    }
+
+    public string getUserType(UserType type)
+    {
+        return type == UserType.Admin ? "Admin" : type == UserType.Moderator ? "Moderator" : type == UserType.User ? "User" : "InvalidRole";
+    }
+}
