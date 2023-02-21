@@ -55,10 +55,14 @@
 	</tbody>
 
 </table>
+<AuthorizeView Roles="Admin, Moderator, User">
+	<Authorized >
+		<NavLink class="nav-link" href=@href>
+			<span class="oi oi-plus" aria-hidden="true"></span> Dodaj opinię
+		</NavLink>
+	</Authorized>
+</AuthorizeView>
 
-<NavLink class="nav-link" href=@href>
-	<span class="oi oi-plus" aria-hidden="true"></span> Dodaj opinię
-</NavLink>
 
 @if (drink.Opinions.Count() != 0)
 {
